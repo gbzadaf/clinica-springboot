@@ -1,5 +1,6 @@
 package com.gabrielf.clinica.model;
 
+import com.gabrielf.clinica.model.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.gabrielf.clinica.model;
+package com.gabrielf.clinica.model.enums;
 
 public enum AppointmentStatus {
 
