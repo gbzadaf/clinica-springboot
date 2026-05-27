@@ -16,7 +16,7 @@ public record AppointmentRequest(
         @NotNull @Future
         LocalDateTime scheduleAt,
 
-        Integer durationTime,
+        Integer durationMinutes,
         String notes
 
 ) {}
