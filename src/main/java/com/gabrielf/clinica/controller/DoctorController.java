@@ -3,6 +3,7 @@ package com.gabrielf.clinica.controller;
 import com.gabrielf.clinica.dto.DoctorRequest;
 import com.gabrielf.clinica.dto.DoctorResponse;
 import com.gabrielf.clinica.services.DoctorService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/doctors")
+@SecurityRequirement(name = "bearerAuth")
 public class DoctorController {
 
     private final DoctorService doctorService;
@@ -37,7 +39,7 @@ public class DoctorController {
 
     @GetMapping("/specialty/{specialty}")
     public ResponseEntity<List<DoctorResponse>> findBySpecialty(@PathVariable String specialty) {
-        return ResponseEntity.ok(doctorService.findBySpeciality(specialty));
+        return ResponseEntity.ok(doctorService.findBySpecialty(specialty));
 
     }
 

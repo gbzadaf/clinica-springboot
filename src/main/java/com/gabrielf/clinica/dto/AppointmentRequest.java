@@ -14,7 +14,7 @@ public record AppointmentRequest(
         UUID doctorId,
 
         @NotNull @Future
-        LocalDateTime scheduleAt,
+        LocalDateTime scheduledAt,
 
         Integer durationMinutes,
         String notes

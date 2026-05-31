@@ -3,6 +3,7 @@ package com.gabrielf.clinica.controller;
 import com.gabrielf.clinica.dto.AppointmentRequest;
 import com.gabrielf.clinica.dto.AppointmentResponse;
 import com.gabrielf.clinica.services.AppointmentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/appointments")
+@SecurityRequirement(name = "bearerAuth")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;

@@ -39,7 +39,7 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
 
         int duration = request.durationMinutes() != null ? request.durationMinutes() : 30;
-        LocalDateTime start = request.scheduleAt();
+        LocalDateTime start = request.scheduledAt();
         LocalDateTime end = start.plusMinutes(duration);
 
         boolean conflit = appointmentRepository.existsConflict(doctor.getId(), start, end);

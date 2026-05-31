@@ -11,7 +11,7 @@ public record DoctorRequest(
         String crm,
 
         @NotBlank
-        String speciality,
+        String specialty,
 
         @NotBlank @Email
         String email,

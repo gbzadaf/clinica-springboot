@@ -28,7 +28,7 @@ public class DoctorService {
         Doctor doctor = new Doctor();
         doctor.setName(request.name());
         doctor.setCrm(request.crm());
-        doctor.setSpecialty(request.speciality());
+        doctor.setSpecialty(request.specialty());
         doctor.setEmail(request.email());
         doctor.setPhone(request.phone());
 
@@ -42,8 +42,8 @@ public class DoctorService {
 
     }
 
-    public List<DoctorResponse> findBySpeciality(String speciality) {
-        return  doctorRepository.findBySpecialtyIgnoreCaseAndActiveTrue(speciality)
+    public List<DoctorResponse> findBySpecialty(String specialty) {
+        return  doctorRepository.findBySpecialtyIgnoreCaseAndActiveTrue(specialty)
                 .stream()
                 .map(DoctorResponse::from)
                 .toList();
@@ -61,7 +61,7 @@ public class DoctorService {
 
         doctor.setName(request.name());
         doctor.setCrm(request.crm());
-        doctor.setSpecialty(request.speciality());
+        doctor.setSpecialty(request.specialty());
         doctor.setEmail(request.email());
         doctor.setPhone(request.phone());
 
