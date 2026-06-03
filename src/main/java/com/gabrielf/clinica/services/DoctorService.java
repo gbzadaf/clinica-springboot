@@ -2,6 +2,8 @@ package com.gabrielf.clinica.services;
 
 import com.gabrielf.clinica.dto.DoctorRequest;
 import com.gabrielf.clinica.dto.DoctorResponse;
+import com.gabrielf.clinica.exceptions.BusinessException;
+import com.gabrielf.clinica.exceptions.ResourceNotFoundException;
 import com.gabrielf.clinica.model.Doctor;
 import com.gabrielf.clinica.repository.DoctorRepository;
 import org.springframework.data.domain.Page;
@@ -22,7 +24,7 @@ public class DoctorService {
 
     public DoctorResponse create (DoctorRequest request) {
         if (doctorRepository.existsByCrm(request.crm())) {
-            throw new RuntimeException("CRM já cadastrado");
+            throw new BusinessException("CRM já cadastrado");
         }
 
         Doctor doctor = new Doctor();
@@ -51,13 +53,13 @@ public class DoctorService {
 
     public DoctorResponse findById(UUID id) {
         return doctorRepository.findById(id).map(DoctorResponse::from)
-                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Médico não encontrado"));
 
     }
 
     public DoctorResponse update(UUID id, DoctorRequest request) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Médico não encontrado"));
 
         doctor.setName(request.name());
         doctor.setCrm(request.crm());
@@ -71,7 +73,7 @@ public class DoctorService {
 
     public void delete(UUID id) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Médico não encontrado"));
 
         doctor.setActive(false);
         doctorRepository.save(doctor);

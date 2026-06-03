@@ -2,6 +2,8 @@ package com.gabrielf.clinica.services;
 
 import com.gabrielf.clinica.dto.PatientRequest;
 import com.gabrielf.clinica.dto.PatientResponse;
+import com.gabrielf.clinica.exceptions.BusinessException;
+import com.gabrielf.clinica.exceptions.ResourceNotFoundException;
 import com.gabrielf.clinica.model.Patient;
 import com.gabrielf.clinica.repository.PatientRepository;
 import org.springframework.data.domain.Page;
@@ -21,10 +23,10 @@ public class PatientService {
 
     public PatientResponse create(PatientRequest request) {
         if (patientRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado");
         }
         if (patientRepository.existsByCpf(request.cpf())) {
-            throw new RuntimeException("CPF já cadastrado");
+            throw new BusinessException("CPF já cadastrado");
         }
 
         Patient patient = new Patient();
@@ -45,13 +47,13 @@ public class PatientService {
 
     public PatientResponse findById(UUID id) {
         return patientRepository.findById(id).map(PatientResponse::from)
-                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado"));
 
     }
 
     public PatientResponse update(UUID id, PatientRequest request) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado"));
 
         patient.setName(request.name());
         patient.setEmail(request.email());
@@ -65,7 +67,7 @@ public class PatientService {
 
     public void delete(UUID id) {
         Patient patient = patientRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+                orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado"));
 
         patient.setActive(false);
         patientRepository.save(patient);

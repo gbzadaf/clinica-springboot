@@ -2,6 +2,8 @@ package com.gabrielf.clinica.services;
 
 import com.gabrielf.clinica.dto.AppointmentRequest;
 import com.gabrielf.clinica.dto.AppointmentResponse;
+import com.gabrielf.clinica.exceptions.BusinessException;
+import com.gabrielf.clinica.exceptions.ResourceNotFoundException;
 import com.gabrielf.clinica.model.Appointment;
 import com.gabrielf.clinica.model.Doctor;
 import com.gabrielf.clinica.model.Patient;
@@ -33,10 +35,10 @@ public class AppointmentService {
 
     public AppointmentResponse create(AppointmentRequest request) {
         Patient patient = patientRepository.findById(request.patientId())
-                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente não encontrado"));
 
         Doctor doctor = doctorRepository.findById(request.doctorId())
-                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Médico não encontrado"));
 
         int duration = request.durationMinutes() != null ? request.durationMinutes() : 30;
         LocalDateTime start = request.scheduledAt();
@@ -44,7 +46,7 @@ public class AppointmentService {
 
         boolean conflit = appointmentRepository.existsConflict(doctor.getId(), start, end);
         if (conflit) {
-            throw  new RuntimeException("Médico já possui consulta neste horário");
+            throw  new BusinessException("Médico já possui consulta neste horário");
 
         }
 
@@ -69,7 +71,7 @@ public class AppointmentService {
     public AppointmentResponse findById(UUID id) {
         return appointmentRepository.findById(id)
                 .map(AppointmentResponse::from)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
 
     }
 
@@ -92,10 +94,10 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
 
         if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
-            throw new RuntimeException("Agendamento já cancelado");
+            throw new BusinessException("Agendamento já cancelado");
         }
         if (appointment.getScheduledAt().isBefore(LocalDateTime.now().plusHours(24))) {
-            throw new RuntimeException("Cancelamento deve ser feito com 24 horas de antecedência");
+            throw new BusinessException("Cancelamento deve ser feito com 24 horas de antecedência");
         }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
@@ -105,10 +107,10 @@ public class AppointmentService {
 
     public AppointmentResponse confirm(UUID id) {
         Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
 
         if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
-            throw new RuntimeException("Apenas agendamentos com SCHEDULED podem ser confirmados");
+            throw new BusinessException("Apenas agendamentos com SCHEDULED podem ser confirmados");
         }
 
         appointment.setStatus(AppointmentStatus.CONFIRMED);

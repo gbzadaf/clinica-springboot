@@ -3,6 +3,8 @@ package com.gabrielf.clinica.services;
 import com.gabrielf.clinica.dto.LoginRequest;
 import com.gabrielf.clinica.dto.RegisterRequest;
 import com.gabrielf.clinica.dto.TokenResponse;
+import com.gabrielf.clinica.exceptions.BusinessException;
+import com.gabrielf.clinica.exceptions.ResourceNotFoundException;
 import com.gabrielf.clinica.model.User;
 import com.gabrielf.clinica.repository.UserRepository;
 import com.gabrielf.clinica.security.JwtService;
@@ -29,7 +31,7 @@ public class AuthService {
 
     public TokenResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado");
         }
 
         User user = new User();
@@ -49,7 +51,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
         //gera um token JWT assinado com a secret, usando o e-mail do usuário como identificador dentro do token
         String token = jwtService.generateToken(user.getEmail());
