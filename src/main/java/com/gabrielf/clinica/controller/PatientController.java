@@ -5,6 +5,7 @@ import com.gabrielf.clinica.dto.PatientResponse;
 import com.gabrielf.clinica.services.PatientService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PatientResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<PatientResponse>> findAll(@ParameterObject Pageable pageable) {
         return ResponseEntity.ok(patientService.findAll(pageable));
 
     }

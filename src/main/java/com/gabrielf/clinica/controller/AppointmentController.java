@@ -5,6 +5,7 @@ import com.gabrielf.clinica.dto.AppointmentResponse;
 import com.gabrielf.clinica.services.AppointmentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AppointmentResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<AppointmentResponse>> findAll(@ParameterObject Pageable pageable) {
         return ResponseEntity.ok(appointmentService.findAll(pageable));
 
     }
