@@ -25,12 +25,15 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private final NotificationService notificationService;
 
     public AppointmentService(AppointmentRepository appointmentRepository, PatientRepository patientRepository,
-                              DoctorRepository doctorRepository) {
+                              DoctorRepository doctorRepository,
+                              NotificationService notificationService) {
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
+        this.notificationService = notificationService;
     }
 
     public AppointmentResponse create(AppointmentRequest request) {
@@ -58,7 +61,11 @@ public class AppointmentService {
         appointment.setNotes(request.notes());
         appointment.setStatus(AppointmentStatus.SCHEDULED);
 
-        return  AppointmentResponse.from(appointmentRepository.save(appointment));
+        Appointment saved = appointmentRepository.save(appointment);
+        notificationService.sendAppointmentConfirmation(saved);
+        return AppointmentResponse.from(saved);
+
+
 
     }
 
@@ -114,7 +121,10 @@ public class AppointmentService {
         }
 
         appointment.setStatus(AppointmentStatus.CONFIRMED);
-        return AppointmentResponse.from(appointmentRepository.save(appointment));
+
+        Appointment saved = appointmentRepository.save(appointment);
+        notificationService.sendAppointmentCancellation(saved);
+        return AppointmentResponse.from(saved);
 
     }
 
