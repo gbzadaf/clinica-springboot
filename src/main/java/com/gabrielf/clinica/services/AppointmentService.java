@@ -108,8 +108,10 @@ public class AppointmentService {
         }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
-        return AppointmentResponse.from(appointmentRepository.save(appointment));
 
+        Appointment saved = appointmentRepository.save(appointment);
+        notificationService.sendAppointmentCancellation(saved);
+        return AppointmentResponse.from(saved);
     }
 
     public AppointmentResponse confirm(UUID id) {
@@ -117,7 +119,7 @@ public class AppointmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
 
         if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
-            throw new BusinessException("Apenas agendamentos com SCHEDULED podem ser confirmados");
+            throw new BusinessException("Apenas agendamentos com status SCHEDULED podem ser confirmados");
         }
 
         appointment.setStatus(AppointmentStatus.CONFIRMED);
